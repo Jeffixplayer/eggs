@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Munkalap Felület</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-clipboard-list"></i> Munkalap Felület</h1>
+            <div class="header-actions">
+                <button class="btn btn-primary" id="newWorksheetBtn">
+                    <i class="fas fa-plus"></i> Új Munkalap
+                </button>
+                <button class="btn btn-secondary" id="saveBtn">
+                    <i class="fas fa-save"></i> Mentés
+                </button>
+                <button class="btn btn-secondary" id="loadBtn">
+                    <i class="fas fa-folder-open"></i> Betöltés
+                </button>
+            </div>
+        </header>
+
+        <div class="sidebar">
+            <h3><i class="fas fa-list"></i> Munkalapok</h3>
+            <div class="worksheet-list" id="worksheetList">
+                <!-- Dinamikusan töltődik fel -->
+            </div>
+            <button class="btn btn-outline add-worksheet-btn" id="addWorksheetBtn">
+                <i class="fas fa-plus"></i> Új hozzáadása
+            </button>
+        </div>
+
+        <main class="main-content">
+            <div class="worksheet-header">
+                <input type="text" class="worksheet-title" id="worksheetTitle" placeholder="Munkalap címe...">
+                <div class="worksheet-info">
+                    <span id="cellCount">0 cella</span>
+                    <span id="lastModified">Módosítva: -</span>
+                </div>
+            </div>
+
+            <div class="toolbar">
+                <div class="format-group">
+                    <button class="tool-btn" id="boldBtn" title="Félkövér">
+                        <i class="fas fa-bold"></i>
+                    </button>
+                    <button class="tool-btn" id="italicBtn" title="Dőlt">
+                        <i class="fas fa-italic"></i>
+                    </button>
+                    <button class="tool-btn" id="underlineBtn" title="Aláhúzott">
+                        <i class="fas fa-underline"></i>
+                    </button>
+                </div>
+                
+                <div class="format-group">
+                    <select class="font-size-select" id="fontSizeSelect">
+                        <option value="12">12px</option>
+                        <option value="14" selected>14px</option>
+                        <option value="16">16px</option>
+                        <option value="18">18px</option>
+                        <option value="20">20px</option>
+                        <option value="24">24px</option>
+                    </select>
+                </div>
+
+                <div class="format-group">
+                    <button class="tool-btn" id="alignLeftBtn" title="Balra igazítás">
+                        <i class="fas fa-align-left"></i>
+                    </button>
+                    <button class="tool-btn" id="alignCenterBtn" title="Középre igazítás">
+                        <i class="fas fa-align-center"></i>
+                    </button>
+                    <button class="tool-btn" id="alignRightBtn" title="Jobbra igazítás">
+                        <i class="fas fa-align-right"></i>
+                    </button>
+                </div>
+
+                <div class="format-group">
+                    <input type="color" class="color-picker" id="textColorPicker" title="Szöveg szín">
+                    <input type="color" class="color-picker" id="bgColorPicker" title="Háttér szín" value="#ffffff">
+                </div>
+
+                <div class="format-group">
+                    <button class="tool-btn" id="insertRowBtn" title="Sor beszúrása">
+                        <i class="fas fa-plus"></i> Sor
+                    </button>
+                    <button class="tool-btn" id="insertColBtn" title="Oszlop beszúrása">
+                        <i class="fas fa-plus"></i> Oszlop
+                    </button>
+                    <button class="tool-btn" id="deleteRowBtn" title="Sor törlése">
+                        <i class="fas fa-minus"></i> Sor
+                    </button>
+                    <button class="tool-btn" id="deleteColBtn" title="Oszlop törlése">
+                        <i class="fas fa-minus"></i> Oszlop
+                    </button>
+                </div>
+            </div>
+
+            <div class="worksheet-container">
+                <div class="table-wrapper">
+                    <table class="worksheet-table" id="worksheetTable">
+                        <!-- Dinamikusan generált táblázat -->
+                    </table>
+                </div>
+            </div>
+
+            <div class="formula-bar">
+                <label for="formulaInput">Formula:</label>
+                <input type="text" id="formulaInput" placeholder="Írjon be formulát vagy szöveget...">
+                <button class="btn btn-small" id="applyFormulaBtn">Alkalmaz</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal dialógusok -->
+    <div class="modal" id="saveModal">
+        <div class="modal-content">
+            <h3>Munkalap mentése</h3>
+            <input type="text" id="saveFileName" placeholder="Fájl neve...">
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="confirmSaveBtn">Mentés</button>
+                <button class="btn btn-secondary" id="cancelSaveBtn">Mégse</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="loadModal">
+        <div class="modal-content">
+            <h3>Munkalap betöltése</h3>
+            <div class="file-list" id="fileList">
+                <!-- Mentett fájlok listája -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="cancelLoadBtn">Mégse</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

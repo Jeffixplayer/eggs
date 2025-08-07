@@ -4,6 +4,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import Dashboard from './pages/Dashboard';
 import SignatureDemo from './pages/SignatureDemo';
+import PDFDemo from './pages/PDFDemo';
 import { auth } from './firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
@@ -37,6 +38,10 @@ function App() {
           <Route 
             path="/signature-demo" 
             element={user ? <SignatureDemo /> : <Navigate to="/login" />} 
+          />
+          <Route 
+            path="/pdf-demo" 
+            element={user ? <PDFDemo /> : <Navigate to="/login" />} 
           />
           <Route 
             path="/" 

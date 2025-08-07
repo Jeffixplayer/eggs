@@ -9,7 +9,8 @@ const RegistrationForm = () => {
     username: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    role: 'worker'
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -82,7 +83,8 @@ const RegistrationForm = () => {
         username: formData.username,
         email: formData.email,
         createdAt: new Date(),
-        role: 'user'
+        role: formData.role,
+        status: 'active'
       });
 
       console.log('User registered successfully');
@@ -153,7 +155,7 @@ const RegistrationForm = () => {
           )}
         </div>
 
-        <div className="mb-6">
+        <div className="mb-4">
           <input
             type="password"
             name="confirmPassword"
@@ -167,6 +169,18 @@ const RegistrationForm = () => {
           {errors.confirmPassword && (
             <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
           )}
+        </div>
+
+        <div className="mb-6">
+          <select
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-600"
+          >
+            <option value="worker">Worker</option>
+            <option value="admin">Admin</option>
+          </select>
         </div>
 
         <button

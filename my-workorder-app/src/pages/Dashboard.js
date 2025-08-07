@@ -1,22 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, orderBy, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, deleteDoc, doc, where } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { useUserRole } from '../hooks/useUserRole';
 import Sidebar from '../components/Sidebar';
 import WorkOrderForm from '../components/WorkOrderForm';
+import AdminDashboard from '../components/AdminDashboard';
 
 const Dashboard = () => {
   const [user] = useAuthState(auth);
+  const { userRole, loading: roleLoading } = useUserRole(user);
   const [activeSection, setActiveSection] = useState('worksheet');
   const [workOrders, setWorkOrders] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editingWorkOrder, setEditingWorkOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !userRole) return;
 
-    const q = query(collection(db, 'workOrders'), orderBy('createdAt', 'desc'));
+    let q;
+    // Admins see all work orders, workers see only their own
+    if (userRole.role === 'admin') {
+      q = query(collection(db, 'workOrders'), orderBy('createdAt', 'desc'));
+    } else {
+      q = query(
+        collection(db, 'workOrders'),
+        where('createdBy', '==', user.uid),
+        orderBy('createdAt', 'desc')
+      );
+    }
+
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const workOrdersData = [];
       querySnapshot.forEach((doc) => {
@@ -27,7 +42,7 @@ const Dashboard = () => {
     });
 
     return () => unsubscribe();
-  }, [user]);
+  }, [user, userRole]);
 
   const handleCreateWorkOrder = () => {
     setEditingWorkOrder(null);
@@ -198,30 +213,88 @@ const Dashboard = () => {
   );
 
   const renderContent = () => {
-    switch (activeSection) {
-      case 'worksheet':
-        return renderWorksheet();
-      case 'schedule':
-        return renderSchedule();
-      case 'project':
-        return renderProject();
-      default:
-        return renderWorksheet();
+    if (userRole?.role === 'admin') {
+      switch (activeSection) {
+        case 'worksheet':
+          return <AdminDashboard />;
+        case 'schedule':
+          return renderSchedule();
+        case 'project':
+          return renderProject();
+        default:
+          return <AdminDashboard />;
+      }
+    } else {
+      // Worker view
+      switch (activeSection) {
+        case 'worksheet':
+          return renderWorksheet();
+        case 'schedule':
+          return renderSchedule();
+        case 'project':
+          return renderProject();
+        default:
+          return renderWorksheet();
+      }
     }
   };
 
+  if (roleLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen bg-gray-100">
-      <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} />
+      <Sidebar 
+        activeSection={activeSection} 
+        setActiveSection={setActiveSection}
+        isOpen={sidebarOpen}
+        setIsOpen={setSidebarOpen}
+      />
       
-      <main className="flex-1 ml-64 p-8 overflow-y-auto">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-4">
-            <p className="text-gray-600">
-              Welcome back, {user?.displayName || user?.email}!
-            </p>
+      <main className="flex-1 lg:ml-64 overflow-y-auto">
+        {/* Mobile header */}
+        <div className="lg:hidden bg-white shadow-sm border-b border-gray-200 p-4">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <h1 className="text-lg font-semibold text-gray-900">Work Orders</h1>
+            <div className="w-10"></div> {/* Spacer for center alignment */}
           </div>
-          {renderContent()}
+        </div>
+        
+        <div className="p-4 lg:p-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+              <div>
+                <p className="text-gray-600">
+                  Welcome back, {user?.displayName || user?.email}!
+                </p>
+                <p className="text-sm text-gray-500 capitalize">
+                  Role: {userRole?.role}
+                </p>
+              </div>
+              {userRole?.role === 'worker' && activeSection === 'worksheet' && (
+                <button
+                  onClick={handleCreateWorkOrder}
+                  className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium w-full sm:w-auto"
+                >
+                  Create Work Order
+                </button>
+              )}
+            </div>
+            {renderContent()}
+          </div>
         </div>
       </main>
 

@@ -1,25 +1,58 @@
-# Work Order Management App
+# Digital Work Order Management System
 
-A modern, responsive work order management application built with React, Firebase, and Tailwind CSS. This application allows users to create, manage, and track work orders with a clean and intuitive interface.
+A comprehensive, modern work order management application built with React, Firebase, and Tailwind CSS. This system provides role-based access control, digital signatures, image uploads, and advanced filtering capabilities for efficient work order management.
 
 ## Features
 
-- 🔐 **User Authentication** - Secure login and registration using Firebase Auth
-- 📋 **Work Order Management** - Create, edit, delete, and view work orders
-- 🎨 **Modern UI** - Beautiful, responsive design with Tailwind CSS
-- ⚡ **Real-time Updates** - Live data synchronization with Firestore
-- 📱 **Mobile Responsive** - Works seamlessly on desktop and mobile devices
-- 🚪 **Navigation** - Sidebar navigation with multiple sections
-- 🏷️ **Priority & Status Tracking** - Color-coded priority and status indicators
+### 🔐 **Authentication & Role Management**
+- Secure login and registration using Firebase Auth
+- Role-based access control (Admin & Worker roles)
+- User profile management with role assignment
+
+### 📋 **Work Order Management**
+- Create, edit, delete, and view work orders
+- Digital signature capture using canvas
+- Multiple image upload with Firebase Storage
+- Company information and postal address tracking
+- Real-time status updates (Pending, In Progress, Completed, Cancelled)
+- Priority levels with color-coded indicators
+
+### 👨‍💼 **Admin Dashboard**
+- View all submitted work orders across the organization
+- Advanced filtering by company name, postal address, status, priority, and date range
+- Real-time status management with dropdown controls
+- Export data to CSV format
+- Statistics overview with counters for different statuses
+
+### 👷 **Worker Interface**
+- Predefined work order forms with company details
+- Image attachment capabilities for documentation
+- Digital signature for work completion verification
+- Personal work order history and tracking
+
+### 🎨 **Modern UI/UX**
+- Beautiful, responsive design with Tailwind CSS
+- Mobile-first responsive layout
+- Touch-friendly interface for tablets and phones
+- Sidebar navigation with mobile hamburger menu
+- Loading states and error handling
+
+### 📱 **Mobile Features**
+- Full mobile responsiveness
+- Touch-based digital signature capture
+- Mobile-optimized form layouts
+- Swipe-friendly navigation
 
 ## Technology Stack
 
 - **Frontend**: React 18
-- **Backend**: Firebase (Authentication, Firestore Database)
+- **Backend**: Firebase (Authentication, Firestore Database, Storage)
 - **Styling**: Tailwind CSS
 - **Routing**: React Router DOM
 - **State Management**: React Hooks
-- **Icons**: Emoji icons for navigation
+- **Digital Signatures**: React Signature Canvas
+- **File Upload**: Firebase Storage
+- **Icons**: SVG icons and emoji icons
 
 ## Project Structure
 
@@ -29,17 +62,22 @@ my-workorder-app/
 │   └── index.html
 ├── src/
 │   ├── components/
-│   │   ├── Sidebar.js              # Navigation sidebar
-│   │   ├── RegistrationForm.js     # User registration form
-│   │   └── WorkOrderForm.js        # Create/edit work orders
+│   │   ├── Sidebar.js              # Responsive navigation sidebar
+│   │   ├── RegistrationForm.js     # User registration with role selection
+│   │   ├── WorkOrderForm.js        # Enhanced work order form
+│   │   ├── AdminDashboard.js       # Admin dashboard with filtering
+│   │   ├── ImageUpload.js          # Firebase Storage image upload
+│   │   └── SignatureCanvas.js      # Digital signature component
 │   ├── pages/
 │   │   ├── LoginPage.js            # Login page
 │   │   ├── RegisterPage.js         # Registration page
-│   │   └── Dashboard.js            # Main dashboard
+│   │   └── Dashboard.js            # Role-based dashboard
+│   ├── hooks/
+│   │   └── useUserRole.js          # Custom hook for role management
 │   ├── firebase.js                 # Firebase configuration
-│   ├── App.js                      # Main app component
+│   ├── App.js                      # Main app with role-based routing
 │   ├── index.js                    # App entry point
-│   └── index.css                   # Global styles
+│   └── index.css                   # Global styles with Tailwind
 ├── tailwind.config.js              # Tailwind configuration
 ├── package.json                    # Dependencies and scripts
 └── README.md                       # This file

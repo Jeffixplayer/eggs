@@ -6,6 +6,7 @@ import { useUserRole } from '../hooks/useUserRole';
 import Sidebar from '../components/Sidebar';
 import WorkOrderForm from '../components/WorkOrderForm';
 import AdminDashboard from '../components/AdminDashboard';
+import UserManagement from '../components/UserManagement';
 
 const Dashboard = () => {
   const [user] = useAuthState(auth);
@@ -212,6 +213,10 @@ const Dashboard = () => {
     </div>
   );
 
+  const renderUsers = () => (
+    <UserManagement />
+  );
+
   const renderContent = () => {
     if (userRole?.role === 'admin') {
       switch (activeSection) {
@@ -221,6 +226,8 @@ const Dashboard = () => {
           return renderSchedule();
         case 'project':
           return renderProject();
+        case 'users':
+          return renderUsers();
         default:
           return <AdminDashboard />;
       }
@@ -254,6 +261,7 @@ const Dashboard = () => {
         setActiveSection={setActiveSection}
         isOpen={sidebarOpen}
         setIsOpen={setSidebarOpen}
+        userRole={userRole}
       />
       
       <main className="flex-1 lg:ml-64 overflow-y-auto">

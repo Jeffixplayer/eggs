@@ -172,15 +172,10 @@ const RegistrationForm = () => {
         </div>
 
         <div className="mb-6">
-          <select
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-600"
-          >
-            <option value="worker">Worker</option>
-            <option value="admin">Admin</option>
-          </select>
+          <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
+            <span className="font-medium">Note:</span> All new accounts are created as Workers. 
+            Contact your administrator to request Admin privileges if needed.
+          </p>
         </div>
 
         <button

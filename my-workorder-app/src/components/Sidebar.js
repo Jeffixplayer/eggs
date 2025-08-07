@@ -11,11 +11,32 @@ const Sidebar = ({ activeSection, setActiveSection, isOpen, setIsOpen }) => {
     }
   };
 
-  const menuItems = [
-    { id: 'worksheet', name: 'Worksheet', icon: '📋' },
-    { id: 'schedule', name: 'Schedule', icon: '📅' },
-    { id: 'project', name: 'Project', icon: '📊' },
-  ];
+const Sidebar = ({ activeSection, setActiveSection, isOpen, setIsOpen, userRole }) => {
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  // Dynamic menu items based on user role
+  const getMenuItems = () => {
+    const baseItems = [
+      { id: 'worksheet', name: 'Worksheet', icon: '📋' },
+      { id: 'schedule', name: 'Schedule', icon: '📅' },
+      { id: 'project', name: 'Project', icon: '📊' },
+    ];
+
+    // Add admin-only sections
+    if (userRole?.role === 'admin') {
+      baseItems.push({ id: 'users', name: 'User Management', icon: '👥' });
+    }
+
+    return baseItems;
+  };
+
+  const menuItems = getMenuItems();
 
   return (
     <>
@@ -48,7 +69,10 @@ const Sidebar = ({ activeSection, setActiveSection, isOpen, setIsOpen }) => {
           {menuItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => setActiveSection(item.id)}
+              onClick={() => {
+                setActiveSection(item.id);
+                setIsOpen(false); // Close mobile sidebar when item is selected
+              }}
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
                 activeSection === item.id
                   ? 'bg-primary-600 text-white'

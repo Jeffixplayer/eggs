@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import Dashboard from './pages/Dashboard';
+import SignatureDemo from './pages/SignatureDemo';
 import { auth } from './firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
@@ -32,6 +33,10 @@ function App() {
           <Route 
             path="/dashboard" 
             element={user ? <Dashboard /> : <Navigate to="/login" />} 
+          />
+          <Route 
+            path="/signature-demo" 
+            element={user ? <SignatureDemo /> : <Navigate to="/login" />} 
           />
           <Route 
             path="/" 

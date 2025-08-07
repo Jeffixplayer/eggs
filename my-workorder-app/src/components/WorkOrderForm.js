@@ -3,7 +3,7 @@ import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import ImageUpload from './ImageUpload';
-import DigitalSignature from './SignatureCanvas';
+import DigitalSignaturePad from './DigitalSignaturePad';
 
 const WorkOrderForm = ({ workOrder, onSave, onCancel }) => {
   const [user] = useAuthState(auth);
@@ -324,15 +324,17 @@ const WorkOrderForm = ({ workOrder, onSave, onCancel }) => {
             {/* Digital Signature Section */}
             <div className="bg-gray-50 p-4 rounded-lg">
               <h4 className="text-lg font-medium text-gray-900 mb-4">Digital Signature</h4>
-              <DigitalSignature 
+              <DigitalSignaturePad 
                 ref={signatureRef}
                 onSignatureChange={handleSignatureChange}
+                onSignatureSaved={(signatureData) => {
+                  setFormData(prev => ({
+                    ...prev,
+                    signature: signatureData
+                  }));
+                }}
+                existingSignature={formData.signature}
               />
-              {formData.signature && (
-                <div className="mt-4">
-                  <p className="text-sm text-green-600 font-medium">✓ Signature captured</p>
-                </div>
-              )}
             </div>
 
             <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-6 border-t border-gray-200">

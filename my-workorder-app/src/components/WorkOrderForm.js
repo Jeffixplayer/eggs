@@ -4,6 +4,7 @@ import { db, auth } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import ImageUpload from './ImageUpload';
 import DigitalSignaturePad from './DigitalSignaturePad';
+import PDFActions from './PDFActions';
 
 const WorkOrderForm = ({ workOrder, onSave, onCancel }) => {
   const [user] = useAuthState(auth);
@@ -337,21 +338,36 @@ const WorkOrderForm = ({ workOrder, onSave, onCancel }) => {
               />
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-6 border-t border-gray-200">
-              <button
-                type="button"
-                onClick={onCancel}
-                className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full sm:w-auto px-4 py-2 bg-primary-600 text-white rounded-md text-sm font-medium hover:bg-primary-700 disabled:opacity-50"
-              >
-                {loading ? 'Saving...' : 'Save Work Order'}
-              </button>
+            <div className="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0 sm:space-x-3 pt-6 border-t border-gray-200">
+              {/* PDF Actions - only show if editing existing work order */}
+              <div className="flex-1">
+                {workOrder?.id && (
+                  <PDFActions 
+                    workOrderData={workOrder}
+                    buttonStyle="dropdown"
+                    showLabels={true}
+                    size="sm"
+                  />
+                )}
+              </div>
+              
+              {/* Form Actions */}
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                <button
+                  type="button"
+                  onClick={onCancel}
+                  className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full sm:w-auto px-4 py-2 bg-primary-600 text-white rounded-md text-sm font-medium hover:bg-primary-700 disabled:opacity-50"
+                >
+                  {loading ? 'Saving...' : 'Save Work Order'}
+                </button>
+              </div>
             </div>
           </form>
         </div>

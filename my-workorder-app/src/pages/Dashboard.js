@@ -7,6 +7,7 @@ import Sidebar from '../components/Sidebar';
 import WorkOrderForm from '../components/WorkOrderForm';
 import AdminDashboard from '../components/AdminDashboard';
 import UserManagement from '../components/UserManagement';
+import PDFActions from '../components/PDFActions';
 
 const Dashboard = () => {
   const [user] = useAuthState(auth);
@@ -172,19 +173,29 @@ const Dashboard = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {workOrder.dueDate ? new Date(workOrder.dueDate).toLocaleDateString() : 'No due date'}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                    <button
-                      onClick={() => handleEditWorkOrder(workOrder)}
-                      className="text-primary-600 hover:text-primary-900"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteWorkOrder(workOrder.id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Delete
-                    </button>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex flex-col space-y-2">
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => handleEditWorkOrder(workOrder)}
+                          className="text-primary-600 hover:text-primary-900 text-sm font-medium"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteWorkOrder(workOrder.id)}
+                          className="text-red-600 hover:text-red-900 text-sm font-medium"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                      <PDFActions 
+                        workOrderData={workOrder}
+                        buttonStyle="compact"
+                        showLabels={false}
+                        size="sm"
+                      />
+                    </div>
                   </td>
                 </tr>
               ))}

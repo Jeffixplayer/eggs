@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, orderBy, onSnapshot, updateDoc, doc, where } from 'firebase/firestore';
 import { db } from '../firebase';
+import PDFActions from './PDFActions';
 
 const AdminDashboard = () => {
   const [workOrders, setWorkOrders] = useState([]);
@@ -337,19 +338,29 @@ const AdminDashboard = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {order.createdAt?.toDate?.()?.toLocaleDateString() || new Date(order.createdAt).toLocaleDateString()}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button
-                      onClick={() => {/* Add view details functionality */}}
-                      className="text-primary-600 hover:text-primary-900 mr-3"
-                    >
-                      View
-                    </button>
-                    <button
-                      onClick={() => {/* Add edit functionality */}}
-                      className="text-green-600 hover:text-green-900"
-                    >
-                      Edit
-                    </button>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex flex-col space-y-2">
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => {/* Add view details functionality */}}
+                          className="text-primary-600 hover:text-primary-900 text-sm font-medium"
+                        >
+                          View
+                        </button>
+                        <button
+                          onClick={() => {/* Add edit functionality */}}
+                          className="text-green-600 hover:text-green-900 text-sm font-medium"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                      <PDFActions 
+                        workOrderData={order}
+                        buttonStyle="compact"
+                        showLabels={false}
+                        size="sm"
+                      />
+                    </div>
                   </td>
                 </tr>
               ))}

@@ -1,0 +1,134 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String           @id @default(cuid())
+  email          String           @unique
+  name           String?
+  passwordHash   String
+  role           Role             @default(EMPLOYEE)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  workOrders     WorkOrder[]      @relation("WorkOrderAssignedTo")
+  createdOrders  WorkOrder[]      @relation("WorkOrderCreatedBy")
+  vacationReqs   VacationRequest[]
+  calendarEvents CalendarEvent[]  @relation("UserCalendarEvents")
+}
+
+enum Role {
+  EMPLOYEE
+  ADMIN
+  SUPERADMIN
+}
+
+model WorkOrder {
+  id              String              @id @default(cuid())
+  title           String
+  date            DateTime
+  customerName    String
+  address         String?
+  description     String?
+  technician      User                @relation("WorkOrderAssignedTo", fields: [technicianId], references: [id])
+  technicianId    String
+  createdBy       User                @relation("WorkOrderCreatedBy", fields: [createdById], references: [id])
+  createdById     String
+  status          WorkOrderStatus     @default(IN_PROGRESS)
+  internalNote    String?
+  autoSavedAt     DateTime?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  versions        WorkOrderVersion[]
+  attachments     Attachment[]
+  signatures      Signature[]
+  calendarEvents  CalendarEvent[]
+}
+
+enum WorkOrderStatus {
+  IN_PROGRESS
+  DONE
+}
+
+model WorkOrderVersion {
+  id            String      @id @default(cuid())
+  workOrder     WorkOrder   @relation(fields: [workOrderId], references: [id])
+  workOrderId   String
+  versionNumber Int
+  data          Json
+  createdAt     DateTime    @default(now())
+
+  @@unique([workOrderId, versionNumber])
+}
+
+model Attachment {
+  id          String     @id @default(cuid())
+  workOrder   WorkOrder  @relation(fields: [workOrderId], references: [id])
+  workOrderId String
+  type        AttachmentType
+  url         String
+  filename    String
+  createdAt   DateTime   @default(now())
+}
+
+enum AttachmentType {
+  IMAGE
+  DOCUMENT
+}
+
+model Signature {
+  id          String     @id @default(cuid())
+  workOrder   WorkOrder  @relation(fields: [workOrderId], references: [id])
+  workOrderId String
+  signer      String
+  imageData   String
+  createdAt   DateTime   @default(now())
+}
+
+model VacationRequest {
+  id          String        @id @default(cuid())
+  user        User          @relation(fields: [userId], references: [id])
+  userId      String
+  startDate   DateTime
+  endDate     DateTime
+  status      VacationStatus @default(PENDING)
+  reason      String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+enum VacationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model CalendarEvent {
+  id            String        @id @default(cuid())
+  title         String
+  start         DateTime
+  end           DateTime
+  eventType     EventType
+  workOrder     WorkOrder?    @relation(fields: [workOrderId], references: [id])
+  workOrderId   String?
+  technician    User?         @relation("UserCalendarEvents", fields: [technicianId], references: [id])
+  technicianId  String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+enum EventType {
+  PROJECT
+  MAINTENANCE
+  VACATION
+}
